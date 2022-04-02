@@ -14,6 +14,8 @@ target 'PhoneAnalyser' do
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
+  pod 'react-native-network-info', :path => '../node_modules/react-native-network-info'
+
   target 'PhoneAnalyserTests' do
     inherit! :complete
     # Pods for testing

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Button} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from 'react-native-network-info';
 import InformationResult from '../components/informationResult';
+import * as reactNativeFs from 'react-native-fs';
+
+import {SystemInformationStyles} from './../styles/general';
 
 interface Result {
   fieldName: string;
@@ -13,6 +16,7 @@ interface Result {
  * @returns
  */
 const SystemInformation = ({ navigation, route }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [systemInformation, setSystemInformation] = useState([]);
   const [deviceInformation, setDeviceInformation] = useState([]);
   const [storageInformation, setStorageInformation] = useState([]);
@@ -28,6 +32,7 @@ const SystemInformation = ({ navigation, route }) => {
       await collectSystemInformation();
       await collectStorageInformation();
       await collectNetworkInformation();
+      setIsLoading(false);
     } catch (e) {
       console.log(e);
     }
@@ -201,30 +206,88 @@ const SystemInformation = ({ navigation, route }) => {
     }
   };
 
-  if (systemInformation.length > 0 || deviceInformation.length > 0) {
+  /**
+   * Exports all collected information to a HTML document to the root of the user area 
+   */
+  const exportInformationToFile = async () => {
+    let htmlString: string = "<html><!DOCTYPE html><head><title>Phone Analyser Report</title></head><div><h1>System & Network Information Report</h1></div>";
+    htmlString += `<div style="margin-top: 2px; margin-bottom: 5px;"><h5>Generated on ${new Date()}</h5></div>`
+
+    htmlString += `<h3>Device Information</h3>`;
+    deviceInformation.map((information: Result) => {
+      htmlString += `<div style="margin-top: 2px; margin-bottom: 2px;">${information.fieldName}: ${information.result}</div>`;
+    });
+
+    htmlString += `<h3>System Information</h3>`
+    systemInformation.map((information: Result) => {
+      htmlString += `<div style="margin-top: 2px; margin-bottom: 2px;">${information.fieldName}: ${information.result}</div>`;
+    });
+
+    htmlString += `<h3>Storage Information</h3>`
+    storageInformation.map((information: Result) => {
+      htmlString += `<div style="margin-top: 2px; margin-bottom: 2px;">${information.fieldName}: ${information.result}</div>`;
+    });
+
+    htmlString += `<h3>Network Information</h3>`
+    networkInformation.map((information: Result) => {
+      htmlString += `<div style="margin-top: 2px; margin-bottom: 2px;">${information.fieldName}: ${information.result}</div>`;
+    });
+
+    htmlString += "</html>";
+    console.log(htmlString);
+
+    saveFileToDevice(htmlString);
+  }
+
+  const saveFileToDevice = (htmlString: string) => {
+    const today = new Date();
+    const path = reactNativeFs.DocumentDirectoryPath + `/SystemInfoReport-${today.toDateString()}-T${today.getHours()
+      }-${today.getMinutes()}-${today.getSeconds()}.html`;
+    console.log(path);
+    try {
+      reactNativeFs.writeFile(path, htmlString, 'utf8')
+        .then((success) => {
+          console.log('FILE WRITTEN!');
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } catch (e: any) {
+      throw new Error(`Save file to device failed`);
+    }
+    
+  }
+
+  if (!isLoading) {
     return (
-      <ScrollView style={{ paddingHorizontal: '5%' }}>
-        <Text style={{ fontSize: 25, fontWeight: 'bold', textAlign: 'center', marginVertical: 5 }}>Results page</Text>
+      <ScrollView style={SystemInformationStyles.viewPadding}>
+        <Text style={SystemInformationStyles.informationHeader}>Results page</Text>
         
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 5 }}>Device Information:</Text>
+        <Text style={SystemInformationStyles.informationHeader}>Device Information:</Text>
         {deviceInformation.map(information => {
             return (<InformationResult fieldName={information.fieldName} result={information.result} />);
         })}
-        
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 5 }}>System Information:</Text>
+
+        <Text style={SystemInformationStyles.informationHeader}>System Information:</Text>
         {systemInformation.map(information => {
           return (<InformationResult fieldName={information.fieldName} result={information.result} />);
         })}
 
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 5 }}>Storage Information:</Text>
+        <Text style={SystemInformationStyles.informationHeader}>Storage Information:</Text>
         {storageInformation.map(information => {
           return (<InformationResult fieldName={information.fieldName} result={information.result} />);
         })}
 
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 5 }}>Network Information:</Text>
+        <Text style={SystemInformationStyles.informationHeader}>Network Information:</Text>
         {networkInformation.map(information => {
           return (<InformationResult fieldName={information.fieldName} result={information.result} />);
         })}
+
+        <View style={{marginVertical: 14}}>
+          <Button title="Export Information"
+            onPress={() => {exportInformationToFile()}}
+          />
+        </View>
       </ScrollView>
     );
   } else {

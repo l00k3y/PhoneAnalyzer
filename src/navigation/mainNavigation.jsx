@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from './../screens/home';
 import CollectingData from './../screens/collectingData';
 import SystemInformation from './../screens/systemInformation';
+import EXIFParser from './../screens/imageParser';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ const HomeNavigation = () => {
           component={SystemInformation}
           options={{}}
         />
+        <Stack.Screen name="ImageParser" component={EXIFParser} options={{}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

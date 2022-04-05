@@ -1,32 +1,37 @@
 import * as React from 'react';
-import styles from '../styles/general.js';
+import {GeneralStyles} from './../styles/general';
 import {Text, View, Button} from 'react-native';
 
 const HomeScreen = ({navigation, route}) => {
   return (
-    <View style={styles.flexContainer}>
-      <View style={styles.flexContainer}>
-        <Text style={styles.h1}>Phone Analyser</Text>
+    <View style={GeneralStyles.flexContainer}>
+      <View style={GeneralStyles.flexContainer}>
+        <Text style={GeneralStyles.h1}>Phone Analyser</Text>
       </View>
 
-      <View style={styles.menuButtonContainer}>
-        <View style={styles.menuButtonStyle}>
+      <View style={GeneralStyles.menuButtonContainer}>
+        <View style={GeneralStyles.menuButtonStyle}>
           <Button
             title="Collect System Information"
-            style={styles.buttonStyle}
-            onPress={() => navigation.navigate('CollectingData')}
+            style={GeneralStyles.buttonStyle}
+            onPress={() => navigation.navigate('SystemInformation')}
           />
         </View>
 
-        <View style={styles.menuButtonStyle}>
+        <View style={GeneralStyles.menuButtonStyle}>
           <Button
             title="Scan Installed Applications"
-            style={styles.buttonStyle}
+            style={GeneralStyles.buttonStyle}
+            onPress={() => navigation.navigate('ImageParser')}
           />
         </View>
 
-        <View style={styles.menuButtonStyle}>
-          <Button title="Scan Images" style={styles.buttonStyle} />
+        <View style={GeneralStyles.menuButtonStyle}>
+          <Button
+            title="Scan Images"
+            style={GeneralStyles.buttonStyle}
+            onPress={() => navigation.navigate('ImageParser')}
+          />
         </View>
       </View>
     </View>

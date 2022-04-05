@@ -16,6 +16,10 @@ target 'PhoneAnalyser' do
 
   pod 'react-native-network-info', :path => '../node_modules/react-native-network-info'
 
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
   target 'PhoneAnalyserTests' do
     inherit! :complete
     # Pods for testing

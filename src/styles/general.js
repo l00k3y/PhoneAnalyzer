@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-const styles = StyleSheet.create({
+export const GeneralStyles = StyleSheet.create({
   flexContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -39,4 +39,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export const SystemInformationStyles = StyleSheet.create({
+  informationHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 5,
+  },
+  viewPadding: {
+    paddingHorizontal: '5%',
+  },
+});

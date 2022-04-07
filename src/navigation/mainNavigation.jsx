@@ -5,6 +5,7 @@ import HomeScreen from './../screens/home';
 import CollectingData from './../screens/collectingData';
 import SystemInformation from './../screens/systemInformation';
 import EXIFParser from './../screens/imageParser';
+import EXIFParseResult from './../screens/imageParseResult';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,11 @@ const HomeNavigation = () => {
           options={{}}
         />
         <Stack.Screen name="ImageParser" component={EXIFParser} options={{}} />
+        <Stack.Screen
+          name="EXIFParseResult"
+          component={EXIFParseResult}
+          options={{}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

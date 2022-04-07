@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Button} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, ScrollView, Button} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { NetworkInfo } from 'react-native-network-info';
+import {NetworkInfo} from 'react-native-network-info';
 import InformationResult from '../components/informationResult';
 import * as reactNativeFs from 'react-native-fs';
 
@@ -15,7 +15,7 @@ interface Result {
  *
  * @returns
  */
-const SystemInformation = ({ navigation, route }) => {
+const SystemInformation = ({navigation, route}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [systemInformation, setSystemInformation] = useState([]);
   const [deviceInformation, setDeviceInformation] = useState([]);
@@ -24,7 +24,7 @@ const SystemInformation = ({ navigation, route }) => {
 
   useEffect(() => {
     collectData();
-  }, []);
+  });
 
   const collectData = async () => {
     try {
@@ -40,13 +40,13 @@ const SystemInformation = ({ navigation, route }) => {
 
   const collectDeviceInformation = async () => {
     const deviceInformationResults: Result[] = [];
-    let callResult: Result = await makeCollectCall('Device', DeviceInfo.getDevice);
+    let callResult: Result = await makeCollectCall(
+      'Device',
+      DeviceInfo.getDevice,
+    );
     deviceInformationResults.push(callResult);
 
-    callResult = await makeCollectCall(
-      'Device Brand',
-      DeviceInfo.getBrand,
-    );
+    callResult = await makeCollectCall('Device Brand', DeviceInfo.getBrand);
     deviceInformationResults.push(callResult);
 
     callResult = await makeCollectCall('Device ID', DeviceInfo.getDeviceId);
@@ -55,16 +55,19 @@ const SystemInformation = ({ navigation, route }) => {
     callResult = await makeCollectCall('Device Tags', DeviceInfo.getTags);
     deviceInformationResults.push(callResult);
 
+    callResult = await makeCollectCall('Device Type', DeviceInfo.getDeviceType);
+    deviceInformationResults.push(callResult);
+
     callResult = await makeCollectCall(
-      'Device Type',
-      DeviceInfo.getDeviceType,
+      'Serial Number',
+      DeviceInfo.getSerialNumber,
     );
     deviceInformationResults.push(callResult);
 
-    callResult = await makeCollectCall('Serial Number', DeviceInfo.getSerialNumber);
-    deviceInformationResults.push(callResult);
-
-    callResult = await makeCollectCall('Manufacturer', DeviceInfo.getManufacturer);
+    callResult = await makeCollectCall(
+      'Manufacturer',
+      DeviceInfo.getManufacturer,
+    );
     deviceInformationResults.push(callResult);
 
     callResult = await makeCollectCall('Product Name', DeviceInfo.getProduct);
@@ -85,20 +88,29 @@ const SystemInformation = ({ navigation, route }) => {
     );
     deviceInformationResults.push(callResult);
     setDeviceInformation(deviceInformationResults);
-  }
+  };
 
   const collectSystemInformation = async () => {
     const systemInformationResults: Result[] = [];
-    let callResult: Result = await makeCollectCall('Build ID', DeviceInfo.getBuildId);
+    let callResult: Result = await makeCollectCall(
+      'Build ID',
+      DeviceInfo.getBuildId,
+    );
     systemInformationResults.push(callResult);
 
     callResult = await makeCollectCall('System Name', DeviceInfo.getSystemName);
     systemInformationResults.push(callResult);
 
-    callResult = await makeCollectCall('System Version', DeviceInfo.getSystemVersion);
+    callResult = await makeCollectCall(
+      'System Version',
+      DeviceInfo.getSystemVersion,
+    );
     systemInformationResults.push(callResult);
 
-    callResult = await makeCollectCall('Security Patch', DeviceInfo.getSecurityPatch);
+    callResult = await makeCollectCall(
+      'Security Patch',
+      DeviceInfo.getSecurityPatch,
+    );
     systemInformationResults.push(callResult);
 
     callResult = await makeCollectCall('Type of Build', DeviceInfo.getType);
@@ -107,52 +119,55 @@ const SystemInformation = ({ navigation, route }) => {
     callResult = await makeCollectCall('API Level', DeviceInfo.getApiLevel);
     systemInformationResults.push(callResult);
 
-    callResult = await makeCollectCall(
-      'Bootloader',
-      DeviceInfo.getBootloader,
-    );
+    callResult = await makeCollectCall('Bootloader', DeviceInfo.getBootloader);
     systemInformationResults.push(callResult);
     setSystemInformation(systemInformationResults);
-  }
+  };
 
   const collectStorageInformation = async () => {
-    const storageInformation: Result[] = [];
-    let callResult: Result = await makeCollectCall('Total Disk Capacity (bytes)', DeviceInfo.getTotalDiskCapacity);
+    const storageDetails: Result[] = [];
+    let callResult: Result = await makeCollectCall(
+      'Total Disk Capacity (bytes)',
+      DeviceInfo.getTotalDiskCapacity,
+    );
     storageInformation.push(callResult);
-
-    callResult = await makeCollectCall('Total Memory (bytes)', DeviceInfo.getTotalMemory);
-    storageInformation.push(callResult);
-
-    callResult = await makeCollectCall('Used Memory (bytes)', DeviceInfo.getUsedMemory);
-    storageInformation.push(callResult);
-
-    setStorageInformation(storageInformation);
-  }
-
-  const collectNetworkInformation = async () => {
-    const networkInformation: Result[] = [];
-    let callResult: Result = await makeCollectCall('Host', DeviceInfo.getHost);
-    networkInformation.push(callResult);
-
-    callResult = await makeCollectCall('IP Address', DeviceInfo.getIpAddress);
-    networkInformation.push(callResult);
 
     callResult = await makeCollectCall(
-      'MAC Address',
-      DeviceInfo.getMacAddress,
+      'Total Memory (bytes)',
+      DeviceInfo.getTotalMemory,
     );
+    storageDetails.push(callResult);
 
-    networkInformation.push(callResult);
+    callResult = await makeCollectCall(
+      'Used Memory (bytes)',
+      DeviceInfo.getUsedMemory,
+    );
+    storageDetails.push(callResult);
+
+    setStorageInformation(storageInformation);
+  };
+
+  const collectNetworkInformation = async () => {
+    const networkDetails: Result[] = [];
+    let callResult: Result = await makeCollectCall('Host', DeviceInfo.getHost);
+    networkDetails.push(callResult);
+
+    callResult = await makeCollectCall('IP Address', DeviceInfo.getIpAddress);
+    networkDetails.push(callResult);
+
+    callResult = await makeCollectCall('MAC Address', DeviceInfo.getMacAddress);
+
+    networkDetails.push(callResult);
     callResult = await makeCollectCall(
       'Phone Number',
       DeviceInfo.getPhoneNumber,
     );
-    networkInformation.push(callResult);
+    networkDetails.push(callResult);
 
     // callResult = await makeCollectCall('User Agent', DeviceInfo.getUserAgent);
     // systemInformationResults.push(callResult);
 
-    setNetworkInformation(networkInformation);
+    setNetworkInformation(networkDetails);
 
     // NetworkInfo.getIPAddress().then(ipAddress => {
     //   console.log(ipAddress);
@@ -201,91 +216,126 @@ const SystemInformation = ({ navigation, route }) => {
         result: actionResult ? actionResult : 'N/A',
       };
       return defaultResult;
-    } catch (error: any) {
+    } catch (error) {
       throw new Error(`${fieldName} retrieval failed`);
     }
   };
 
   /**
-   * Exports all collected information to a HTML document to the root of the user area 
+   * Exports all collected information to a HTML document to the root of the user area
    */
   const exportInformationToFile = async () => {
-    let htmlString: string = "<html><!DOCTYPE html><head><title>Phone Analyser Report</title></head><div><h1>System & Network Information Report</h1></div>";
-    htmlString += `<div style="margin-top: 2px; margin-bottom: 5px;"><h5>Generated on ${new Date()}</h5></div>`
+    let htmlString: string =
+      '<html><!DOCTYPE html><head><title>Phone Analyser Report</title></head><div><h1>System & Network Information Report</h1></div>';
+    htmlString += `<div style="margin-top: 2px; margin-bottom: 5px;"><h5>Generated on ${new Date()}</h5></div>`;
 
-    htmlString += `<h3>Device Information</h3>`;
+    htmlString += '<h3>Device Information</h3>';
     deviceInformation.map((information: Result) => {
       htmlString += `<div style="margin-top: 2px; margin-bottom: 2px;">${information.fieldName}: ${information.result}</div>`;
     });
 
-    htmlString += `<h3>System Information</h3>`
+    htmlString += '<h3>System Information</h3>';
     systemInformation.map((information: Result) => {
       htmlString += `<div style="margin-top: 2px; margin-bottom: 2px;">${information.fieldName}: ${information.result}</div>`;
     });
 
-    htmlString += `<h3>Storage Information</h3>`
+    htmlString += '<h3>Storage Information</h3>';
     storageInformation.map((information: Result) => {
       htmlString += `<div style="margin-top: 2px; margin-bottom: 2px;">${information.fieldName}: ${information.result}</div>`;
     });
 
-    htmlString += `<h3>Network Information</h3>`
+    htmlString += '<h3>Network Information</h3>';
     networkInformation.map((information: Result) => {
       htmlString += `<div style="margin-top: 2px; margin-bottom: 2px;">${information.fieldName}: ${information.result}</div>`;
     });
 
-    htmlString += "</html>";
+    htmlString += '</html>';
     console.log(htmlString);
 
     saveFileToDevice(htmlString);
-  }
+  };
 
   const saveFileToDevice = (htmlString: string) => {
     const today = new Date();
-    const path = reactNativeFs.DocumentDirectoryPath + `/SystemInfoReport-${today.toDateString()}-T${today.getHours()
-      }-${today.getMinutes()}-${today.getSeconds()}.html`;
+    const path =
+      reactNativeFs.DocumentDirectoryPath +
+      `/SystemInfoReport-${today.toDateString()}-T${today.getHours()}-${today.getMinutes()}-${today.getSeconds()}.html`;
     console.log(path);
     try {
-      reactNativeFs.writeFile(path, htmlString, 'utf8')
-        .then((success) => {
-          console.log('FILE WRITTEN!');
+      reactNativeFs
+        .writeFile(path, htmlString, 'utf8')
+        .then(success => {
+          console.log(`FILE WRITTEN! ${success}`);
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err.message);
         });
-    } catch (e: any) {
-      throw new Error(`Save file to device failed`);
+    } catch (e) {
+      throw new Error('Save file to device failed');
     }
-    
-  }
+  };
 
   if (!isLoading) {
     return (
       <ScrollView style={SystemInformationStyles.viewPadding}>
-        <Text style={SystemInformationStyles.informationHeader}>Results page</Text>
-        
-        <Text style={SystemInformationStyles.informationHeader}>Device Information:</Text>
+        <Text style={SystemInformationStyles.informationHeader}>
+          Results page
+        </Text>
+
+        <Text style={SystemInformationStyles.informationHeader}>
+          Device Information:
+        </Text>
         {deviceInformation.map(information => {
-            return (<InformationResult fieldName={information.fieldName} result={information.result} />);
+          return (
+            <InformationResult
+              fieldName={information.fieldName}
+              result={information.result}
+            />
+          );
         })}
 
-        <Text style={SystemInformationStyles.informationHeader}>System Information:</Text>
+        <Text style={SystemInformationStyles.informationHeader}>
+          System Information:
+        </Text>
         {systemInformation.map(information => {
-          return (<InformationResult fieldName={information.fieldName} result={information.result} />);
+          return (
+            <InformationResult
+              fieldName={information.fieldName}
+              result={information.result}
+            />
+          );
         })}
 
-        <Text style={SystemInformationStyles.informationHeader}>Storage Information:</Text>
+        <Text style={SystemInformationStyles.informationHeader}>
+          Storage Information:
+        </Text>
         {storageInformation.map(information => {
-          return (<InformationResult fieldName={information.fieldName} result={information.result} />);
+          return (
+            <InformationResult
+              fieldName={information.fieldName}
+              result={information.result}
+            />
+          );
         })}
 
-        <Text style={SystemInformationStyles.informationHeader}>Network Information:</Text>
+        <Text style={SystemInformationStyles.informationHeader}>
+          Network Information:
+        </Text>
         {networkInformation.map(information => {
-          return (<InformationResult fieldName={information.fieldName} result={information.result} />);
+          return (
+            <InformationResult
+              fieldName={information.fieldName}
+              result={information.result}
+            />
+          );
         })}
 
         <View style={{marginVertical: 14}}>
-          <Button title="Export Information"
-            onPress={() => {exportInformationToFile()}}
+          <Button
+            title="Export Information"
+            onPress={() => {
+              exportInformationToFile();
+            }}
           />
         </View>
       </ScrollView>

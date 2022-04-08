@@ -20,6 +20,8 @@ target 'PhoneAnalyser' do
 
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 
+  pod 'react-native-file-access', :path => '../node_modules/react-native-file-access'
+
   target 'PhoneAnalyserTests' do
     inherit! :complete
     # Pods for testing

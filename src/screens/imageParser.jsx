@@ -5,7 +5,7 @@ import ExifReader from './../../node_modules/exifreader/src/exif-reader.js';
 import RNFS from 'react-native-fs';
 import {decode} from 'base64-arraybuffer';
 
-import {SystemInformationStyles} from './../styles/general';
+import {GeneralStyles, SystemInformationStyles} from './../styles/general';
 
 /**
  *
@@ -13,7 +13,7 @@ import {SystemInformationStyles} from './../styles/general';
  * @returns
  */
 const EXIFParser = ({navigation, route}) => {
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [disabledExamine, setDisabledExamine] = useState(true);
   const [processedFilesCompleted, setProcessedFilesCompleted] = useState(false);
@@ -89,59 +89,57 @@ const EXIFParser = ({navigation, route}) => {
     });
   };
 
-  if (isLoading) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  } else {
-    return (
-      <View style={SystemInformationStyles.viewPadding}>
-        <Text style={SystemInformationStyles.informationHeader}>
-          Examine Images
-        </Text>
+  // if (isLoading) {
+  //   return (
+  //     <View>
+  //       <Text>Loading...</Text>
+  //     </View>
+  //   );
+  // } else {
+  return (
+    <View style={SystemInformationStyles.viewPadding}>
+      <Text style={GeneralStyles.h1}>Examine Images</Text>
 
-        <Button
-          title="Select Images"
-          onPress={async () => {
-            await selectImages();
-          }}
-        />
+      <Button
+        title="Select Images"
+        onPress={async () => {
+          await selectImages();
+        }}
+      />
 
-        {disabledExamine ? null : (
-          <>
-            <View style={{paddingVertical: 14}}>
-              <Text style={{textAlign: 'center', padding: 14}}>
-                Selected ({selectedImages.length}) File(s)
-              </Text>
-            </View>
-            <Button
-              title="Examine File(s)"
-              onPress={async () => {
-                await processSelectedImages();
-              }}
-              disabled={disabledExamine}
-            />
-          </>
-        )}
-
-        {processedFilesCompleted ? (
-          <View style={{paddingVertical: 14}}>
-            <Button
-              title="Build Report"
-              style={{paddingVertical: 14}}
-              onPress={() => {
-                navigation.navigate('EXIFParseResult', {
-                  details: processedFileDetails,
-                });
-              }}
-            />
+      {disabledExamine ? null : (
+        <>
+          <View style={GeneralStyles.marginVertical14}>
+            <Text style={GeneralStyles.paddingCenterAlign}>
+              Selected ({selectedImages.length}) File(s)
+            </Text>
           </View>
-        ) : null}
-      </View>
-    );
-  }
+          <Button
+            title="Examine File(s)"
+            onPress={async () => {
+              await processSelectedImages();
+            }}
+            disabled={disabledExamine}
+          />
+        </>
+      )}
+
+      {processedFilesCompleted ? (
+        <View style={GeneralStyles.marginVertical14}>
+          <Button
+            title="Build Report"
+            style={GeneralStyles.marginVertical14}
+            onPress={() => {
+              navigation.navigate('EXIFParseResult', {
+                details: processedFileDetails,
+              });
+            }}
+          />
+        </View>
+      ) : null}
+    </View>
+  );
 };
+// };
 
 export default EXIFParser;

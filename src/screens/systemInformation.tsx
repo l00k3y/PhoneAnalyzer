@@ -1,11 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, Button} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  Button,
+  ToastAndroid,
+  Platform,
+} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {NetworkInfo} from 'react-native-network-info';
 import InformationResult from '../components/informationResult';
 import * as reactNativeFs from 'react-native-fs';
+import * as Progress from 'react-native-progress';
+import {FileSystem} from 'react-native-file-access';
 
-import {SystemInformationStyles} from './../styles/general';
+import {GeneralStyles, SystemInformationStyles} from './../styles/general';
 
 interface Result {
   fieldName: string;
@@ -16,29 +25,15 @@ interface Result {
  * @returns
  */
 const SystemInformation = ({navigation, route}) => {
+  const [firstLoad, setFirstLoad] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
   const [systemInformation, setSystemInformation] = useState([]);
   const [deviceInformation, setDeviceInformation] = useState([]);
   const [storageInformation, setStorageInformation] = useState([]);
   const [networkInformation, setNetworkInformation] = useState([]);
 
-  useEffect(() => {
-    collectData();
-  });
-
-  const collectData = async () => {
-    try {
-      await collectDeviceInformation();
-      await collectSystemInformation();
-      await collectStorageInformation();
-      await collectNetworkInformation();
-      setIsLoading(false);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const collectDeviceInformation = async () => {
+  const collectDeviceInformation = useCallback(async () => {
     const deviceInformationResults: Result[] = [];
     let callResult: Result = await makeCollectCall(
       'Device',
@@ -88,9 +83,9 @@ const SystemInformation = ({navigation, route}) => {
     );
     deviceInformationResults.push(callResult);
     setDeviceInformation(deviceInformationResults);
-  };
+  }, []);
 
-  const collectSystemInformation = async () => {
+  const collectSystemInformation = useCallback(async () => {
     const systemInformationResults: Result[] = [];
     let callResult: Result = await makeCollectCall(
       'Build ID',
@@ -122,15 +117,15 @@ const SystemInformation = ({navigation, route}) => {
     callResult = await makeCollectCall('Bootloader', DeviceInfo.getBootloader);
     systemInformationResults.push(callResult);
     setSystemInformation(systemInformationResults);
-  };
+  }, []);
 
-  const collectStorageInformation = async () => {
+  const collectStorageInformation = useCallback(async () => {
     const storageDetails: Result[] = [];
     let callResult: Result = await makeCollectCall(
       'Total Disk Capacity (bytes)',
       DeviceInfo.getTotalDiskCapacity,
     );
-    storageInformation.push(callResult);
+    storageDetails.push(callResult);
 
     callResult = await makeCollectCall(
       'Total Memory (bytes)',
@@ -144,10 +139,10 @@ const SystemInformation = ({navigation, route}) => {
     );
     storageDetails.push(callResult);
 
-    setStorageInformation(storageInformation);
-  };
+    setStorageInformation(storageDetails);
+  }, []);
 
-  const collectNetworkInformation = async () => {
+  const collectNetworkInformation = useCallback(async () => {
     const networkDetails: Result[] = [];
     let callResult: Result = await makeCollectCall('Host', DeviceInfo.getHost);
     networkDetails.push(callResult);
@@ -200,7 +195,30 @@ const SystemInformation = ({navigation, route}) => {
     // NetworkInfo.getFrequency().then(frequency => {
     //   console.log(frequency);
     // });
-  };
+  }, []);
+
+  async function collectData() {
+    try {
+      await collectDeviceInformation();
+      setProgress(25);
+      await collectNetworkInformation();
+      setProgress(50);
+      await collectStorageInformation();
+      setProgress(75);
+      await collectSystemInformation();
+      setProgress(100);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    collectData();
+    setFirstLoad(false);
+  }, [firstLoad]);
 
   /**
    *
@@ -255,21 +273,24 @@ const SystemInformation = ({navigation, route}) => {
     saveFileToDevice(htmlString);
   };
 
-  const saveFileToDevice = (htmlString: string) => {
+  const saveFileToDevice = async (htmlString: string) => {
     const today = new Date();
-    const path =
-      reactNativeFs.DocumentDirectoryPath +
-      `/SystemInfoReport-${today.toDateString()}-T${today.getHours()}-${today.getMinutes()}-${today.getSeconds()}.html`;
-    console.log(path);
+
     try {
-      reactNativeFs
-        .writeFile(path, htmlString, 'utf8')
-        .then(success => {
-          console.log(`FILE WRITTEN! ${success}`);
-        })
-        .catch(err => {
-          console.log(err.message);
-        });
+      const externalDirs = await reactNativeFs.getAllExternalFilesDirs();
+      if (externalDirs.length > 0) {
+        const path = `${
+          externalDirs[0]
+        }/SystemInfoReport-${today.toDateString()}-T${today.getHours()}-${today.getMinutes()}-${today.getSeconds()}.html`;
+
+        await FileSystem.writeFile(path, htmlString, 'utf8');
+        if (Platform.OS === 'android') {
+          ToastAndroid.show(`File output to ${path}`, ToastAndroid.LONG);
+        }
+      } else {
+        throw new Error('No output directories found');
+      }
+      // console.log(Dirs.DocumentDir);
     } catch (e) {
       throw new Error('Save file to device failed');
     }
@@ -278,9 +299,7 @@ const SystemInformation = ({navigation, route}) => {
   if (!isLoading) {
     return (
       <ScrollView style={SystemInformationStyles.viewPadding}>
-        <Text style={SystemInformationStyles.informationHeader}>
-          Results page
-        </Text>
+        <Text style={GeneralStyles.h1}>Results page</Text>
 
         <Text style={SystemInformationStyles.informationHeader}>
           Device Information:
@@ -330,7 +349,7 @@ const SystemInformation = ({navigation, route}) => {
           );
         })}
 
-        <View style={{marginVertical: 14}}>
+        <View style={GeneralStyles.marginVertical14}>
           <Button
             title="Export Information"
             onPress={() => {
@@ -342,8 +361,15 @@ const SystemInformation = ({navigation, route}) => {
     );
   } else {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={GeneralStyles.fillContainer}>
+        <View style={GeneralStyles.loadingView}>
+          <Text style={GeneralStyles.paddingCenterAlign}>Loading...</Text>
+          <Progress.Bar
+            progress={progress}
+            width={200}
+            style={GeneralStyles.marginCenterAlign}
+          />
+        </View>
       </View>
     );
   }

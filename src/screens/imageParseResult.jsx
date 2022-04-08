@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {ScrollView, View, Text, Button} from 'react-native';
+import {ScrollView, View, Text} from 'react-native';
+import {GeneralStyles} from '../styles/general';
+import ImageResult from './../components/imageResult';
 
 const EXIFParseResult = ({navigation, route}) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,25 +24,17 @@ const EXIFParseResult = ({navigation, route}) => {
   } else {
     return (
       <ScrollView>
-        <Text
-          style={{
-            textAlign: 'center',
-            fontSize: 24,
-            fontWeight: 'bold',
-            padding: 14,
-          }}>
-          File Scan Result
-        </Text>
+        <Text style={GeneralStyles.h1}>File Scan Result</Text>
         <View>
           {imageDetails.map(element => {
             return (
-              <View style={{padding: 14}}>
-                <Text>File Name: {element.fileName}</Text>
-                <Text>Creation Date: {element.creationDate}</Text>
-                <Text>Latitude: {element.gpsLatitude}</Text>
-                <Text>Longitude: {element.gpsLongitude}</Text>
-                <Text>SHA-256: {element.sha256}</Text>
-              </View>
+              <ImageResult
+                fileName={element.fileName}
+                creationDate={element.creationDate}
+                gpsLatitude={element.gpsLatitude}
+                gpsLongitude={element.gpsLongitude}
+                sha256={element.sha256}
+              />
             );
           })}
         </View>
@@ -48,5 +42,5 @@ const EXIFParseResult = ({navigation, route}) => {
     );
   }
 };
-
+// //key={element.fileName} style={{padding: 14}}>
 export default EXIFParseResult;

@@ -7,6 +7,7 @@ export const GeneralStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
+    color: 'black',
   },
   menuButtonContainer: {
     display: 'flex',
@@ -36,7 +37,18 @@ export const GeneralStyles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
     marginVertical: 14,
+    color: '#000000',
   },
+  loadingView: {
+    display: 'flex',
+    flex: 1,
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  paddingCenterAlign: {padding: 14, textAlign: 'center', color: '#000000'},
+  marginCenterAlign: {marginLeft: 'auto', marginRight: 'auto'},
+  marginVertical14: {marginVertical: 14},
+  smallPaddingBlack: {marginVertical: 2, color: '#000000'},
 });
 
 export const SystemInformationStyles = StyleSheet.create({
@@ -44,8 +56,19 @@ export const SystemInformationStyles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginVertical: 5,
+    color: '#000000',
   },
   viewPadding: {
+    color: '#000000',
     paddingHorizontal: '5%',
+  },
+});
+
+export const ImageResultStyles = StyleSheet.create({
+  textStyle: {
+    color: '#000000',
+  },
+  resultPadding: {
+    padding: 14,
   },
 });

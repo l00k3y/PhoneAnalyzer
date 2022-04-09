@@ -1,29 +1,31 @@
 import React from 'react';
 import {Text, View} from 'react-native';
-import {ImageResultStyles} from './../styles/general';
+import {GeneralStyles} from './../styles/general';
 
 const ImageResult = props => {
   return (
-    <View style={ImageResultStyles.resultPadding}>
-      <Text style={ImageResultStyles.textStyle}>
+    <View style={GeneralStyles.smallPaddingBlack}>
+      <Text style={GeneralStyles.smallPaddingBlack}>
         File Name: {props.fileName}
       </Text>
       {props.creationDate ? (
-        <Text style={ImageResultStyles.textStyle}>
+        <Text style={GeneralStyles.smallPaddingBlack}>
           Creation Date: {props.creationDate}
         </Text>
       ) : null}
       {props.gpsLatitude ? (
-        <Text style={ImageResultStyles.textStyle}>
+        <Text style={GeneralStyles.smallPaddingBlack}>
           Latitude: {props.gpsLatitude}
         </Text>
       ) : null}
       {props.gpsLongitude ? (
-        <Text style={ImageResultStyles.textStyle}>
+        <Text style={GeneralStyles.smallPaddingBlack}>
           Longitude: {props.gpsLongitude}
         </Text>
       ) : null}
-      <Text style={ImageResultStyles.textStyle}>SHA-256: {props.sha256}</Text>
+      <Text style={GeneralStyles.smallPaddingBlack}>
+        SHA-256: {props.sha256}
+      </Text>
     </View>
   );
 };

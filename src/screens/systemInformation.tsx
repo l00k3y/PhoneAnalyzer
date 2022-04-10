@@ -1,11 +1,20 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {View, Text, ScrollView, Button} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Button,
+  ToastAndroid,
+  Platform,
+} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import {NetworkInfo} from 'react-native-network-info';
 import InformationResult from '../components/informationResult';
+import * as reactNativeFs from 'react-native-fs';
+import * as Progress from 'react-native-progress';
+import {FileSystem} from 'react-native-file-access';
 
 import {GeneralStyles, SystemInformationStyles} from './../styles/general';
-import LoadingScreen from './loadingScreen';
-import SaveFileToDevice from '../api/fileSaver';
 
 interface Result {
   fieldName: string;
@@ -209,7 +218,6 @@ const SystemInformation = ({navigation, route}) => {
   useEffect(() => {
     collectData();
     setFirstLoad(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstLoad]);
 
   /**
@@ -262,7 +270,30 @@ const SystemInformation = ({navigation, route}) => {
     htmlString += '</html>';
     console.log(htmlString);
 
-    await SaveFileToDevice(htmlString, 'SystemInformation');
+    saveFileToDevice(htmlString);
+  };
+
+  const saveFileToDevice = async (htmlString: string) => {
+    const today = new Date();
+
+    try {
+      const externalDirs = await reactNativeFs.getAllExternalFilesDirs();
+      if (externalDirs.length > 0) {
+        const path = `${
+          externalDirs[0]
+        }/SystemInfoReport-${today.toDateString()}-T${today.getHours()}-${today.getMinutes()}-${today.getSeconds()}.html`;
+
+        await FileSystem.writeFile(path, htmlString, 'utf8');
+        if (Platform.OS === 'android') {
+          ToastAndroid.show(`File output to ${path}`, ToastAndroid.LONG);
+        }
+      } else {
+        throw new Error('No output directories found');
+      }
+      // console.log(Dirs.DocumentDir);
+    } catch (e) {
+      throw new Error('Save file to device failed');
+    }
   };
 
   if (!isLoading) {
@@ -329,7 +360,18 @@ const SystemInformation = ({navigation, route}) => {
       </ScrollView>
     );
   } else {
-    return <LoadingScreen action={'Loading...'} progress={progress} />;
+    return (
+      <View style={GeneralStyles.fillContainer}>
+        <View style={GeneralStyles.loadingView}>
+          <Text style={GeneralStyles.paddingCenterAlign}>Loading...</Text>
+          <Progress.Bar
+            progress={progress}
+            width={200}
+            style={GeneralStyles.marginCenterAlign}
+          />
+        </View>
+      </View>
+    );
   }
 };
 

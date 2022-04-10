@@ -7,7 +7,6 @@ import {decode} from 'base64-arraybuffer';
 
 import {GeneralStyles, SystemInformationStyles} from './../styles/general';
 import LoadingScreen from './loadingScreen.jsx';
-import {GoogleMapsAPI} from './../api/googleMaps';
 
 /**
  *
@@ -101,7 +100,7 @@ const EXIFParser = ({navigation, route}) => {
           continue;
         }
       }
-      await GoogleMapsAPI.getStaticMapImage(processedDetails);
+      await getStaticMapImage(processedDetails);
       setImagesFailedProcessing(failedFiles);
       resolve();
       setProcessedFilesCompleted(true);
@@ -109,6 +108,32 @@ const EXIFParser = ({navigation, route}) => {
       setProcessedFileDetails(processedDetails);
     });
   };
+
+  async function getStaticMapImage(locations) {
+    try {
+      const finalURL = buildStaticURL(locations);
+      const response = await fetch(finalURL);
+      if (response.status === 200) {
+        console.log(response.url);
+      }
+      // console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  function buildStaticURL(locations) {
+    const staticMapsURL = 'https://maps.googleapis.com/maps/api/staticmap?';
+    const size = 'size=300x200';
+    const format = 'format=jpg';
+    const key = 'key=AIzaSyB3m8qH0IA5oRaM_oRgmweAn7LbBL6uwPg';
+    let markers = 'markers=';
+    for (let i = 0; i < locations.length; i++) {
+      const currentLocation = locations[i];
+      markers += `${currentLocation.gpsLatitude},${currentLocation.gpsLongitude}|`;
+    }
+    return encodeURI(`${staticMapsURL}${size}&${format}&${markers}&${key}`);
+  }
 
   if (isProcessing) {
     return <LoadingScreen action={'Processing...'} progress={progress} />;

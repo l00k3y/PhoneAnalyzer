@@ -4,9 +4,13 @@ const GoogleMapsAPI = () => {
 
   // eslint-disable-next-line no-unused-vars
   async function getStaticMapImage(locations) {
-    buildStaticURL(locations);
-    const response = await fetch(finalURL);
-    console.log(response);
+    try {
+      buildStaticURL(locations);
+      const response = await fetch(finalURL);
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   function buildStaticURL(locations) {

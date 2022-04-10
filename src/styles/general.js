@@ -39,6 +39,13 @@ export const GeneralStyles = StyleSheet.create({
     marginVertical: 14,
     color: '#000000',
   },
+  h3: {
+    textAlign: 'center',
+    fontSize: 12,
+    fontWeight: '600',
+    marginVertical: 6,
+    color: '#000000',
+  },
   loadingView: {
     display: 'flex',
     flex: 1,

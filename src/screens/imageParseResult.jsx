@@ -48,6 +48,12 @@ const EXIFParseResult = ({navigation, route}) => {
   return (
     <ScrollView style={SystemInformationStyles.viewPadding}>
       <Text style={GeneralStyles.h1}>File Scan Result</Text>
+      <Text style={GeneralStyles.h3}>
+        Number of files successfully processed: {imageDetails.length}
+      </Text>
+      <Text style={GeneralStyles.h3}>
+        Number of files failed processing: {failedImages.length}
+      </Text>
       <View>
         {imageDetails.map(element => {
           return (

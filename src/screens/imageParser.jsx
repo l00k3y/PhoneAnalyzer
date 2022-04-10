@@ -70,7 +70,7 @@ const EXIFParser = ({navigation, route}) => {
             if (tags.exif.GPSLatitude.description) {
               gpsLatitude = tags.exif.GPSLatitude.description;
               if (tags.exif.GPSLatitudeRef.value[0] === 'S') {
-                gpsLatitude = -tags.exif.GPSLatitude.description;
+                gpsLatitude = 0 - Number(tags.exif.GPSLatitude.description);
               }
             }
 
@@ -78,7 +78,7 @@ const EXIFParser = ({navigation, route}) => {
             if (tags.exif.GPSLongitude.description) {
               gpsLongitude = tags.exif.GPSLongitude.description;
               if (tags.exif.GPSLongitudeRef.value[0] === 'W') {
-                gpsLongitude = -tags.exif.GPSLongitude.description;
+                gpsLongitude = 0 - Number(tags.exif.GPSLongitude.description);
               }
             }
 

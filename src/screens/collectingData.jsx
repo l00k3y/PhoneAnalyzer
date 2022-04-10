@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, Text, View, Button} from 'react-native';
+import {Text, View} from 'react-native';
 // import {  } from '@react-navigation/native';
 
 const CollectingData = ({navigation, route}) => {

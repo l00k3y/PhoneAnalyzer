@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {ScrollView, View, Text, Button} from 'react-native';
+import {ScrollView, View, Text, Button, Image} from 'react-native';
 import {GeneralStyles, SystemInformationStyles} from '../styles/general';
 import ImageResult from './../components/imageResult';
 import SaveFileToDevice from './../api/fileSaver';
@@ -7,6 +7,7 @@ import SaveFileToDevice from './../api/fileSaver';
 const EXIFParseResult = ({navigation, route}) => {
   const [imageDetails, setImageDetails] = useState([]);
   const [failedImages, setFailedImages] = useState([]);
+  const [plottedMapURL, setPlottedMapURL] = useState('');
 
   async function exportImageResults() {
     let htmlString =
@@ -32,6 +33,7 @@ const EXIFParseResult = ({navigation, route}) => {
       htmlString += '</div>';
     });
 
+    htmlString += `<img src="${route.params.plottedMapURL}></img>"`;
     htmlString += '</html>';
 
     await SaveFileToDevice(htmlString, 'ImageParse');
@@ -41,9 +43,15 @@ const EXIFParseResult = ({navigation, route}) => {
   useEffect(() => {
     setImageDetails(route.params.details);
     setFailedImages(route.params.failedImages);
+    setPlottedMapURL(route.params.plottedMapURL);
 
     console.log(imageDetails);
-  }, [route.params.details, route.params.failedImages, imageDetails]);
+  }, [
+    route.params.details,
+    route.params.failedImages,
+    route.params.plottedMapURL,
+    imageDetails,
+  ]);
 
   return (
     <ScrollView style={SystemInformationStyles.viewPadding}>
@@ -67,6 +75,16 @@ const EXIFParseResult = ({navigation, route}) => {
           );
         })}
       </View>
+      <Image
+        source={{
+          uri: plottedMapURL,
+          headers: {
+            Accept: '*/*',
+          },
+        }}
+        style={GeneralStyles.imageStyle}
+      />
+      {/* {plottedMapURL ? <View /> : null} */}
       <View style={GeneralStyles.marginVertical14}>
         <Button
           onPress={() => {

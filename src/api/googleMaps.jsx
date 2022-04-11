@@ -1,3 +1,4 @@
+// Not currently used
 const GoogleMapsAPI = () => {
   const staticMapsURL = 'https://maps.googleapis.com/maps/api/staticmap?';
   let finalURL = '';

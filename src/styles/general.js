@@ -52,6 +52,12 @@ export const GeneralStyles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
   },
+  imageStyle: {
+    width: 300,
+    height: 200,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
   paddingCenterAlign: {padding: 14, textAlign: 'center', color: '#000000'},
   marginCenterAlign: {marginLeft: 'auto', marginRight: 'auto'},
   marginVertical14: {marginVertical: 14},

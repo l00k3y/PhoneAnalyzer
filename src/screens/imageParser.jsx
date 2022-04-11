@@ -4,7 +4,6 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import ExifReader from './../../node_modules/exifreader/src/exif-reader.js';
 import RNFS from 'react-native-fs';
 import {decode} from 'base64-arraybuffer';
-
 import {GeneralStyles, SystemInformationStyles} from './../styles/general';
 import LoadingScreen from './loadingScreen.jsx';
 
@@ -16,6 +15,7 @@ import LoadingScreen from './loadingScreen.jsx';
 const EXIFParser = ({navigation, route}) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [plottedMapURL, setPlottedMapURL] = useState('');
   const [selectedImages, setSelectedImages] = useState([]);
   const [imagesFailedProcessing, setImagesFailedProcessing] = useState([]);
   const [disabledExamine, setDisabledExamine] = useState(true);
@@ -100,7 +100,7 @@ const EXIFParser = ({navigation, route}) => {
           continue;
         }
       }
-      await getStaticMapImage(processedDetails);
+      setPlottedMapURL(await getStaticMapImage(processedDetails));
       setImagesFailedProcessing(failedFiles);
       resolve();
       setProcessedFilesCompleted(true);
@@ -115,8 +115,8 @@ const EXIFParser = ({navigation, route}) => {
       const response = await fetch(finalURL);
       if (response.status === 200) {
         console.log(response.url);
+        return response.url;
       }
-      // console.log(response);
     } catch (e) {
       console.log(e);
     }
@@ -125,7 +125,8 @@ const EXIFParser = ({navigation, route}) => {
   function buildStaticURL(locations) {
     const staticMapsURL = 'https://maps.googleapis.com/maps/api/staticmap?';
     const size = 'size=300x200';
-    const format = 'format=jpg';
+    const format = 'format=png';
+    // const zoom = 'zoom=3';
     const key = 'key=AIzaSyB3m8qH0IA5oRaM_oRgmweAn7LbBL6uwPg';
     let markers = 'markers=';
     for (let i = 0; i < locations.length; i++) {
@@ -180,9 +181,15 @@ const EXIFParser = ({navigation, route}) => {
                 navigation.navigate('EXIFParseResult', {
                   details: processedFileDetails,
                   failedImages: imagesFailedProcessing,
+                  plottedMapURL: plottedMapURL,
                 });
               }}
             />
+            {/* <WebView
+              source={{
+                uri: 'https://maps.googleapis.com/maps/api/staticmap?size=300x200&format=png&markers=43.46715666666389,11.885394999997223%7C43.46715666666389,11.885394999997223%7C43.467081666663894,11.884538333330555%7C43.468365,11.881634999972222%7C43.468243333330555,11.880171666638889%7C43.46601166663889,11.87911166663889%7C0,0%7C&key=AIzaSyB3m8qH0IA5oRaM_oRgmweAn7LbBL6uwPg',
+              }}
+            /> */}
           </View>
         ) : null}
       </View>

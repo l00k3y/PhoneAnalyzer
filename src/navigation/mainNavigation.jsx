@@ -2,7 +2,6 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from './../screens/home';
-import CollectingData from './../screens/collectingData';
 import SystemInformation from './../screens/systemInformation';
 import EXIFParser from './../screens/imageParser';
 import EXIFParseResult from './../screens/imageParseResult';
@@ -17,11 +16,6 @@ const HomeNavigation = () => {
           name="Home"
           component={HomeScreen}
           options={{title: 'Home'}}
-        />
-        <Stack.Screen
-          name="CollectingData"
-          component={CollectingData}
-          options={{}}
         />
         <Stack.Screen
           name="SystemInformation"

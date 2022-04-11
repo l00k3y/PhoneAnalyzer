@@ -33,7 +33,7 @@ const EXIFParseResult = ({navigation, route}) => {
       htmlString += '</div>';
     });
 
-    htmlString += `<img src="${route.params.plottedMapURL}></img>"`;
+    htmlString += `<img src="${route.params.plottedMapURL}" style="width: 600px; height: 400px;"></img>`;
     htmlString += '</html>';
 
     await SaveFileToDevice(htmlString, 'ImageParse');

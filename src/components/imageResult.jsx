@@ -4,7 +4,9 @@ import {ImageResultStyles} from './../styles/general';
 
 const ImageResult = props => {
   return (
-    <View style={ImageResultStyles.resultPadding}>
+    <View
+      id={`ImageResult${Math.random()}`}
+      style={ImageResultStyles.resultPadding}>
       <Text style={ImageResultStyles.textStyle}>
         File Name: {props.fileName}
       </Text>

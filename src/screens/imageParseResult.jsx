@@ -18,7 +18,7 @@ const EXIFParseResult = ({navigation, route}) => {
 
     htmlString += '<h3 style="margin-bottom:20px;">Image report</h3>';
     imageDetails.map(details => {
-      htmlString += '<div style="margin-top: 5px; margin-bottom: 5px;>';
+      htmlString += '<div style="margin-top: 5px; margin-bottom: 5px;">';
       htmlString += `<div style="margin-top: 2px; margin-bottom: 2px;">File Name: ${details.fileName}</div>`;
       htmlString += details.creationDate
         ? `<div style="margin-top: 2px; margin-bottom: 2px;">Creation Date  : ${details.creationDate}</div>`

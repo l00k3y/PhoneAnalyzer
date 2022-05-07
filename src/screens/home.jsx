@@ -22,7 +22,8 @@ const HomeScreen = ({navigation, route}) => {
           <Button
             title="Scan Installed Applications"
             style={GeneralStyles.buttonStyle}
-            onPress={() => navigation.navigate('ImageParser')}
+            disabled={true}
+            // onPress={}
           />
         </View>
 

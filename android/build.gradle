@@ -18,6 +18,7 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
+ def universalApk = true
 
 allprojects {
     repositories {

@@ -17,7 +17,7 @@ const GoogleMapsAPI = () => {
   function buildStaticURL(locations) {
     const size = 'size=500x400';
     const format = 'format=jpg';
-    const key = 'key=AIzaSyB3m8qH0IA5oRaM_oRgmweAn7LbBL6uwPg';
+    const key = 'key=[PLEASE CREATE A GOOGLE MAPS API KEY FOR USE]';
     let markers = 'markers=';
     for (let i = 0; i < locations.length; i++) {
       const currentLocation = locations[i];

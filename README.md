@@ -11,7 +11,10 @@ https://reactnative.dev/docs/environment-setup
 
 This product uses the React Native CLI
 
-Once you've successfully setup your development environment, clone this repository, navigate to it in a terminal and type
+Once you've successfully setup your development environment, clone this repository, navigate the root of the repository in a terminal and enter the following commands
 
+    npm install => this will install all required dependencies
     npx react-native start => this will start a Metro server for you
-    npx react-native run-android => this will load an emulated device if one isn't currently running and install the debugging APK for use
+    npx react-native run-android => this will load an emulated device if one isn't currently running and install the product's debugging APK for use
+
+You will also need to create a Google Maps API key to generate the static maps images in the 
